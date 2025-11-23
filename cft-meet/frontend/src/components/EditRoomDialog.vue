@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import apiClient from '../services/api';
 
@@ -7,10 +7,14 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true
+  },
+  room: {
+    type: Object,
+    default: null
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'roomAdded']);
+const emit = defineEmits(['update:modelValue', 'roomUpdated']);
 
 const { mobile } = useDisplay();
 
@@ -50,42 +54,43 @@ const capacityRules = [
 
 const formValid = ref(false);
 
+// Watch for room prop changes to populate form
+watch(() => props.room, (newRoom) => {
+  if (newRoom) {
+    formData.value = {
+      name: newRoom.name,
+      capacity: newRoom.capacity,
+      features: [...newRoom.features] // Create a copy of the array
+    };
+  }
+}, { immediate: true });
+
 // Close dialog
 const closeDialog = () => {
   emit('update:modelValue', false);
-  resetForm();
-};
-
-// Reset form
-const resetForm = () => {
-  formData.value = {
-    name: '',
-    capacity: null,
-    features: []
-  };
   error.value = null;
 };
 
 // Submit form
 const submitForm = async () => {
-  if (!formValid.value) return;
+  if (!formValid.value || !props.room) return;
 
   try {
     loading.value = true;
     error.value = null;
 
-    const response = await apiClient.post('/rooms', {
+    const response = await apiClient.put(`/rooms/${props.room.id}`, {
       name: formData.value.name,
       capacity: parseInt(formData.value.capacity),
       features: formData.value.features
     });
 
     // Emit success event
-    emit('roomAdded', response.data);
+    emit('roomUpdated', response.data);
     closeDialog();
   } catch (err) {
-    console.error('Error adding room:', err);
-    error.value = err.response?.data?.error || 'Failed to add room. Please try again.';
+    console.error('Error updating room:', err);
+    error.value = err.response?.data?.error || 'Failed to update room. Please try again.';
   } finally {
     loading.value = false;
   }
@@ -103,8 +108,8 @@ const submitForm = async () => {
   >
     <v-card>
       <v-card-title class="d-flex align-center bg-primary text-white pa-4">
-        <v-icon icon="mdi-plus-circle" size="28" class="mr-3"></v-icon>
-        <span class="text-h5 font-weight-bold">Add New Room</span>
+        <v-icon icon="mdi-pencil" size="28" class="mr-3"></v-icon>
+        <span class="text-h5 font-weight-bold">Edit Room</span>
         <v-spacer></v-spacer>
         <v-btn
           icon="mdi-close"
@@ -196,7 +201,7 @@ const submitForm = async () => {
           :disabled="!formValid"
           :loading="loading"
         >
-          Add Room
+          Update Room
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -216,7 +221,7 @@ const submitForm = async () => {
           icon="mdi-arrow-left"
           @click="closeDialog"
         ></v-btn>
-        <v-toolbar-title class="font-weight-bold">Add New Room</v-toolbar-title>
+        <v-toolbar-title class="font-weight-bold">Edit Room</v-toolbar-title>
       </v-toolbar>
 
       <v-card-text class="pa-4">
@@ -290,7 +295,7 @@ const submitForm = async () => {
           :disabled="!formValid"
           :loading="loading"
         >
-          Add Room
+          Update Room
         </v-btn>
       </v-footer>
     </v-card>

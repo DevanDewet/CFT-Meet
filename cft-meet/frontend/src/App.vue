@@ -38,15 +38,12 @@ onMounted(() => {
       <!-- Desktop Navigation -->
       <div class="d-none d-md-flex">
         <v-btn text class="text-white mx-1" to="/">
-          <v-icon left>mdi-view-dashboard</v-icon>
           Dashboard
         </v-btn>
         <v-btn text class="text-white mx-1" to="/rooms">
-          <v-icon left>mdi-door</v-icon>
           Rooms
         </v-btn>
         <v-btn text class="text-white mx-1" to="/bookings">
-          <v-icon left>mdi-calendar</v-icon>
           Bookings
         </v-btn>
       </div>

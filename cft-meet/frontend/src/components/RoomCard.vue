@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   room: {
@@ -8,11 +9,24 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete', 'edit']);
+const router = useRouter();
 
 const handleDelete = () => {
   emit('delete', props.room.id);
 };
+
+const handleEdit = () => {
+  emit('edit', props.room.id);
+};
+
+const handleBookRoom = (roomId) => {
+  router.push({ 
+    path: '/bookings', 
+    query: { addBooking: 'true', roomId: roomId } 
+  });
+};
+
 </script>
 
 <template>
@@ -68,13 +82,14 @@ const handleDelete = () => {
 
     <v-card-actions class="pa-3 card-actions">
       <v-btn
-        color="primary"
-        variant="text"
-        prepend-icon="mdi-eye"
+        color="accent"
+        variant="tonal"
+        prepend-icon="mdi-pencil"
         size="small"
         class="flex-shrink-1"
+        @click="handleEdit"
       >
-        View Details
+        Edit
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn
@@ -83,6 +98,7 @@ const handleDelete = () => {
         prepend-icon="mdi-calendar-plus"
         size="small"
         class="flex-shrink-1"
+        @click="handleBookRoom(room.id)"
       >
         Book Room
       </v-btn>

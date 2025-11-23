@@ -1,16 +1,22 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import apiClient from '../services/api';
 import RoomCard from '../components/RoomCard.vue';
 import AddRoomDialog from '../components/AddRoomDialog.vue';
+import EditRoomDialog from '../components/EditRoomDialog.vue';
 
 const rooms = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const showAddDialog = ref(false);
+const showEditDialog = ref(false);
 const showDeleteDialog = ref(false);
 const roomToDelete = ref(null);
+const selectedRoom = ref(null);
 const deleting = ref(false);
+const route = useRoute();
+const router = useRouter();
 
 const fetchRooms = async () => {
   try {
@@ -63,6 +69,29 @@ const cancelDelete = () => {
   showDeleteDialog.value = false;
   roomToDelete.value = null;
 };
+
+const handleEditClick = (roomId) => {
+  selectedRoom.value = rooms.value.find(r => r.id === roomId);
+  showEditDialog.value = true;
+};
+
+const handleRoomUpdated = () => {
+  showEditDialog.value = false;
+  selectedRoom.value = null;
+  fetchRooms();
+};
+
+// Watch for edit room query parameter
+watch(() => route.query.editRoom, (shouldEdit) => {
+  if (shouldEdit === 'true' && route.query.roomId) {
+    const roomId = parseInt(route.query.roomId);
+    selectedRoom.value = rooms.value.find(r => r.id === roomId);
+    if (selectedRoom.value) {
+      showEditDialog.value = true;
+    }
+    router.replace({ path: '/rooms' });
+  }
+}, { immediate: true });
 
 onMounted(() => {
   fetchRooms();
@@ -141,7 +170,7 @@ onMounted(() => {
         lg="3"
         xl="2"
       >
-        <RoomCard :room="room" @delete="handleDeleteClick" />
+        <RoomCard :room="room" @delete="handleDeleteClick" @edit="handleEditClick" />
       </v-col>
 
       <!-- Empty State -->
@@ -163,6 +192,13 @@ onMounted(() => {
     <AddRoomDialog
       v-model="showAddDialog"
       @room-added="handleRoomAdded"
+    />
+
+    <!-- Edit Room Dialog -->
+    <EditRoomDialog
+      v-model="showEditDialog"
+      :room="selectedRoom"
+      @roomUpdated="handleRoomUpdated"
     />
 
     <!-- Delete Confirmation Dialog -->
