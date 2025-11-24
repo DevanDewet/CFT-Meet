@@ -28,11 +28,11 @@ Before running the application, ensure you have the following installed:
 
 ##  How to Run Both Apps
 
-### 1. Clone the Repository
+## 1. Clone the Repository
 git clone https://github.com/DevanDewet/CFT-Meet.git
 cd CFT-Meet
 
-### 2. Backend Setup
+## 2. Backend Setup
 
 # Navigate to the backend folder
 cd cft-meet/backend
@@ -45,7 +45,7 @@ npm start
 
 The backend server will run on `http://localhost:3000`
 
-### 3. Frontend Setup
+## 3. Frontend Setup
 
 Open a **new terminal window/tab** and run:
 
@@ -60,14 +60,14 @@ npm run dev
 
 Open your browser and navigate to `http://localhost:5173`
 
-### Architecture
+## Architecture
 The application follows a **client-server architecture** with a clear separation of concerns:
 
 - **Frontend (Vue 3 SPA)**: Provides an interactive user interface using Vue 3's Composition API and Vuetify components
 - **Backend (Express REST API)**: Handles data persistence and business logic with RESTful endpoints
 - **Communication**: Axios client makes HTTP requests to the Express server using a REST API
 
-### Key Design Decisions
+## Key Design Decisions
 
 1. **Composition API**: Used Vue 3's Composition API with `<script setup>` for cleaner, more maintainable code
 2. **Component Architecture**: Created reusable components (RoomCard, BookingCard, dialogs) for consistency
@@ -78,7 +78,7 @@ The application follows a **client-server architecture** with a clear separation
 5. **State Management**: Simple reactive state using Vue's `ref()` 
 6. **Routing**: Vue Router for navigation with query parameters for deep linking (e.g., pre-selecting rooms when booking)
 
-### API Endpoints
+## API Endpoints
 
 **Rooms:**
 - `GET /api/rooms` - List all rooms
@@ -92,7 +92,7 @@ The application follows a **client-server architecture** with a clear separation
 - `PUT /api/bookings/:id` - Update a booking
 - `DELETE /api/bookings/:id` - Delete a booking
 
-### Features Implementation
+## Features Implementation
 
 **Dashboard:**
 - Real-time analytics calculated from rooms and bookings data
