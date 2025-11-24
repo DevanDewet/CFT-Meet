@@ -28,19 +28,19 @@ Before running the application, ensure you have the following installed:
 
 ##  How to Run Both Apps
 
-## 1. Clone the Repository
+### 1. Clone the Repository
 git clone https://github.com/DevanDewet/CFT-Meet.git
 cd CFT-Meet
 
-## 2. Backend Setup
+### 2. Backend Setup
 
-# Navigate to the backend folder
+### Navigate to the backend folder
 cd cft-meet/backend
 
-# Install dependencies
+### Install dependencies
 npm install
 
-# Start the backend server
+### Start the backend server
 npm start
 
 The backend server will run on `http://localhost:3000`
@@ -49,13 +49,13 @@ The backend server will run on `http://localhost:3000`
 
 Open a **new terminal window/tab** and run:
 
-# Navigate to the frontend folder from the project root
+### Navigate to the frontend folder from the project root
 cd cft-meet/frontend
 
-# Install dependencies
+### Install dependencies
 npm install
 
-# Start the development server
+### Start the development server
 npm run dev
 
 Open your browser and navigate to `http://localhost:5173`
