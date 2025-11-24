@@ -42,7 +42,7 @@ const todaysBookings = computed(() => {
   });
 });
 
-// Get upcoming bookings (next 7 days)
+// Get upcoming bookings (next 7 days)0
 const upcomingBookings = computed(() => {
   const now = new Date();
   const weekFromNow = new Date();
@@ -60,26 +60,6 @@ const roomUtilization = computed(() => {
   
   const roomsWithBookings = new Set(bookings.value.map(b => b.roomId)).size;
   return Math.round((roomsWithBookings / rooms.value.length) * 100);
-});
-
-// Get most popular room
-const mostPopularRoom = computed(() => {
-  if (bookings.value.length === 0 || rooms.value.length === 0) return null;
-  
-  const roomBookingCounts = {};
-  bookings.value.forEach(booking => {
-    roomBookingCounts[booking.roomId] = (roomBookingCounts[booking.roomId] || 0) + 1;
-  });
-  
-  const mostBookedRoomId = Object.keys(roomBookingCounts).reduce((a, b) => 
-    roomBookingCounts[a] > roomBookingCounts[b] ? a : b
-  );
-  
-  const room = rooms.value.find(r => r.id === parseInt(mostBookedRoomId));
-  return {
-    ...room,
-    bookingCount: roomBookingCounts[mostBookedRoomId]
-  };
 });
 
 // Get peak booking times
@@ -237,56 +217,8 @@ onMounted(() => {
 
       <!-- Main Content Row -->
       <v-row>
-        <!-- Most Popular Room -->
-        <v-col cols="12" md="6">
-          <v-card elevation="3" class="h-100">
-            <v-card-title class="d-flex align-center bg-primary text-white pa-4">
-              <v-icon icon="mdi-star-circle" size="28" class="mr-3"></v-icon>
-              <span class="text-h6 font-weight-bold">Most Popular Room</span>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text v-if="mostPopularRoom" class="pa-6">
-              <div class="d-flex align-center mb-4">
-                <v-avatar color="primary" size="72" class="mr-4">
-                  <v-icon icon="mdi-door" size="40" color="white"></v-icon>
-                </v-avatar>
-                <div>
-                  <div class="text-h5 font-weight-bold text-primary">{{ mostPopularRoom.name }}</div>
-                  <div class="text-body-1 text-grey-darken-1">{{ mostPopularRoom.bookingCount }} bookings</div>
-                </div>
-              </div>
-              <v-divider class="my-4"></v-divider>
-              <div class="d-flex align-center mb-3">
-                <v-icon icon="mdi-account-multiple" color="primary" class="mr-3"></v-icon>
-                <span class="text-body-1">Capacity: <strong>{{ mostPopularRoom.capacity }} people</strong></span>
-              </div>
-              <div class="d-flex align-start">
-                <v-icon icon="mdi-star-circle" color="accent" class="mr-3 mt-1"></v-icon>
-                <div>
-                  <div class="text-body-2 text-grey-darken-1 mb-2">Features:</div>
-                  <div class="d-flex flex-wrap gap-2">
-                    <v-chip 
-                      v-for="feature in mostPopularRoom.features" 
-                      :key="feature"
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    >
-                      {{ feature }}
-                    </v-chip>
-                  </div>
-                </div>
-              </div>
-            </v-card-text>
-            <v-card-text v-else class="pa-6 text-center text-grey-darken-1">
-              <v-icon icon="mdi-information-outline" size="48" class="mb-3"></v-icon>
-              <p>No booking data available</p>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
         <!-- Upcoming Bookings -->
-        <v-col cols="12" md="6">
+        <v-col cols="12">
           <v-card elevation="3" class="h-100">
             <v-card-title class="d-flex align-center bg-accent text-white pa-4">
               <v-icon icon="mdi-calendar-clock" size="28" class="mr-3"></v-icon>
@@ -344,74 +276,14 @@ onMounted(() => {
         </v-col>
       </v-row>
 
-      <!-- Quick Actions -->
-      <v-row class="mt-4">
-        <v-col cols="12">
-          <v-card elevation="3">
-            <v-card-title class="pa-4 bg-grey-lighten-4">
-              <v-icon icon="mdi-lightning-bolt" class="mr-2" color="primary"></v-icon>
-              <span class="font-weight-bold">Quick Actions</span>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text class="pa-6">
-              <v-row>
-                <v-col cols="12" sm="6" md="3">
-                  <v-btn 
-                    color="primary" 
-                    size="large" 
-                    block
-                    prepend-icon="mdi-plus-circle"
-                    @click="router.push({ path: '/rooms', query: { addRoom: 'true' } })"
-                  >
-                    Add Room
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-btn 
-                    color="accent" 
-                    size="large" 
-                    block
-                    prepend-icon="mdi-calendar-plus"
-                    @click="router.push({ path: '/bookings', query: { addBooking: 'true' } })"
-                  >
-                    Make Booking
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-btn 
-                    color="success" 
-                    size="large" 
-                    block
-                    variant="tonal"
-                    prepend-icon="mdi-door"
-                    @click="navigateToRooms"
-                  >
-                    View Rooms
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-btn 
-                    color="orange-darken-2" 
-                    size="large" 
-                    block
-                    variant="tonal"
-                    prepend-icon="mdi-calendar-multiple"
-                    @click="navigateToBookings"
-                  >
-                    View Bookings
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
+      
     </template>
   </v-container>
 </template>
 
 <style scoped>
 .stat-card {
+  height: 100%;
   transition: all 0.3s ease;
   cursor: pointer;
 }
